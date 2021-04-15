@@ -30,7 +30,7 @@
 *****************************************************************************/
 
 #include <QLibrary>
-#include <QX11Info>
+#include <QtX11Extras/QX11Info>
 #include <X11/Xutil.h>
 
 static WindowList qxt_getWindows(Atom prop)
@@ -179,7 +179,7 @@ uint QxtWindowSystem::idleTime()
     {
         XScreenSaverInfo* info = _xScreenSaverAllocInfo();
         const int screen = QX11Info::appScreen();
-        Qt::HANDLE rootWindow = QX11Info::appRootWindow(screen);
+        Qt::HANDLE rootWindow = (void*)QX11Info::appRootWindow(screen);
         _xScreenSaverQueryInfo(QX11Info::display(), (Drawable*) rootWindow, info);
         idle = info->idle;
         if (info)

@@ -45,28 +45,6 @@
 /* Helper macro called from kex_method_diffie_hellman_group1_sha1_key_exchange */
 #define LIBSSH2_KEX_METHOD_DIFFIE_HELLMAN_SHA1_HASH(value, reqlen, version) \
     {                                                                   \
-        libssh2_sha1_ctx hash;                                          \
-        unsigned long len = 0;                                          \
-        if (!(value)) {                                                 \
-            value = LIBSSH2_ALLOC(session, reqlen + SHA_DIGEST_LENGTH); \
-        }                                                               \
-        if (value)                                                      \
-            while (len < (unsigned long)reqlen) {                       \
-                libssh2_sha1_init(&hash);                               \
-                libssh2_sha1_update(hash, exchange_state->k_value,      \
-                                    exchange_state->k_value_len);       \
-                libssh2_sha1_update(hash, exchange_state->h_sig_comp,   \
-                                    SHA_DIGEST_LENGTH);                 \
-                if (len > 0) {                                          \
-                    libssh2_sha1_update(hash, value, len);              \
-                }    else {                                             \
-                    libssh2_sha1_update(hash, (version), 1);            \
-                    libssh2_sha1_update(hash, session->session_id,      \
-                                        session->session_id_len);       \
-                }                                                       \
-                libssh2_sha1_final(hash, (value) + len);                \
-                len += SHA_DIGEST_LENGTH;                               \
-            }                                                           \
     }
 
 /*
@@ -214,12 +192,12 @@ static int diffie_hellman_sha1(LIBSSH2_SESSION *session,
 
 #if LIBSSH2_MD5
         {
-            libssh2_md5_ctx fingerprint_ctx;
+            libssh2_md5_ctx* fingerprint_ctx;
 
-            libssh2_md5_init(&fingerprint_ctx);
-            libssh2_md5_update(fingerprint_ctx, session->server_hostkey,
-                               session->server_hostkey_len);
-            libssh2_md5_final(fingerprint_ctx, session->server_hostkey_md5);
+            libssh2_md5_init(fingerprint_ctx);
+            //libssh2_md5_update(*fingerprint_ctx, session->server_hostkey,
+            //                   session->server_hostkey_len);
+            //libssh2_md5_final(*fingerprint_ctx, session->server_hostkey_md5);
         }
 #ifdef LIBSSH2DEBUG
         {
@@ -236,12 +214,12 @@ static int diffie_hellman_sha1(LIBSSH2_SESSION *session,
 #endif /* ! LIBSSH2_MD5 */
 
         {
-            libssh2_sha1_ctx fingerprint_ctx;
+            //libssh2_sha1_ctx fingerprint_ctx;
 
-            libssh2_sha1_init(&fingerprint_ctx);
-            libssh2_sha1_update(fingerprint_ctx, session->server_hostkey,
-                                session->server_hostkey_len);
-            libssh2_sha1_final(fingerprint_ctx, session->server_hostkey_sha1);
+            //libssh2_sha1_init(&fingerprint_ctx);
+            //libssh2_sha1_update(fingerprint_ctx, session->server_hostkey,
+            //                    session->server_hostkey_len);
+            //libssh2_sha1_final(fingerprint_ctx, session->server_hostkey_sha1);
         }
 #ifdef LIBSSH2DEBUG
         {
@@ -465,16 +443,16 @@ static int diffie_hellman_sha1(LIBSSH2_SESSION *session,
             unsigned char *iv = NULL, *secret = NULL;
             int free_iv = 0, free_secret = 0;
 
-            LIBSSH2_KEX_METHOD_DIFFIE_HELLMAN_SHA1_HASH(iv,
+            /*LIBSSH2_KEX_METHOD_DIFFIE_HELLMAN_SHA1_HASH(iv,
                                                         session->local.crypt->
-                                                        iv_len, "A");
+                                                        iv_len, "A");*/
             if (!iv) {
                 ret = -1;
                 goto clean_exit;
             }
-            LIBSSH2_KEX_METHOD_DIFFIE_HELLMAN_SHA1_HASH(secret,
+            /*LIBSSH2_KEX_METHOD_DIFFIE_HELLMAN_SHA1_HASH(secret,
                                                         session->local.crypt->
-                                                        secret_len, "C");
+                                                        secret_len, "C");*/
             if (!secret) {
                 LIBSSH2_FREE(session, iv);
                 ret = LIBSSH2_ERROR_KEX_FAILURE;

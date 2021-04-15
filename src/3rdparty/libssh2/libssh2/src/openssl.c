@@ -66,7 +66,7 @@ _libssh2_rsa_new(libssh2_rsa_ctx ** rsa,
                  unsigned long e2len,
                  const unsigned char *coeffdata, unsigned long coefflen)
 {
-    *rsa = RSA_new();
+    /**rsa = RSA_new();
 
     (*rsa)->e = BN_new();
     BN_bin2bn(edata, elen, (*rsa)->e);
@@ -92,7 +92,7 @@ _libssh2_rsa_new(libssh2_rsa_ctx ** rsa,
 
         (*rsa)->iqmp = BN_new();
         BN_bin2bn(coeffdata, coefflen, (*rsa)->iqmp);
-    }
+    }*/
     return 0;
 }
 
@@ -124,7 +124,7 @@ _libssh2_dsa_new(libssh2_dsa_ctx ** dsactx,
                  unsigned long y_len,
                  const unsigned char *x, unsigned long x_len)
 {
-    *dsactx = DSA_new();
+    /**dsactx = DSA_new();
 
     (*dsactx)->p = BN_new();
     BN_bin2bn(p, p_len, (*dsactx)->p);
@@ -141,7 +141,7 @@ _libssh2_dsa_new(libssh2_dsa_ctx ** dsactx,
     if (x_len) {
         (*dsactx)->priv_key = BN_new();
         BN_bin2bn(x, x_len, (*dsactx)->priv_key);
-    }
+    }*/
 
     return 0;
 }
@@ -152,9 +152,9 @@ _libssh2_dsa_sha1_verify(libssh2_dsa_ctx * dsactx,
                          const unsigned char *m, unsigned long m_len)
 {
     unsigned char hash[SHA_DIGEST_LENGTH];
-    DSA_SIG dsasig;
+    //DSA_SIG dsasig;
     int ret;
-
+/*
     dsasig.r = BN_new();
     BN_bin2bn(sig, 20, dsasig.r);
     dsasig.s = BN_new();
@@ -163,7 +163,7 @@ _libssh2_dsa_sha1_verify(libssh2_dsa_ctx * dsactx,
     libssh2_sha1(m, m_len, hash);
     ret = DSA_do_verify(hash, SHA_DIGEST_LENGTH, &dsasig, dsactx);
     BN_clear_free(dsasig.s);
-    BN_clear_free(dsasig.r);
+    BN_clear_free(dsasig.r);*/
 
     return (ret == 1) ? 0 : -1;
 }
@@ -184,20 +184,20 @@ _libssh2_cipher_crypt(_libssh2_cipher_ctx * ctx,
                       _libssh2_cipher_type(algo),
                       int encrypt, unsigned char *block)
 {
-    int blocksize = ctx->cipher->block_size;
+    //int blocksize = ctx->cipher->block_size;
     unsigned char buf[EVP_MAX_BLOCK_LENGTH];
     int ret;
     (void) algo;
     (void) encrypt;
 
-    if (blocksize == 1) {
+    //if (blocksize == 1) {
 /* Hack for arcfour. */
-        blocksize = 8;
-    }
-    ret = EVP_Cipher(ctx, buf, block, blocksize);
+    //    blocksize = 8;
+    //}
+    /*ret = EVP_Cipher(ctx, buf, block, blocksize);
     if (ret == 1) {
         memcpy(block, buf, blocksize);
-    }
+    }*/
     return ret == 1 ? 0 : 1;
 }
 
@@ -221,7 +221,7 @@ aes_ctr_init(EVP_CIPHER_CTX *ctx, const unsigned char *key,
     if (c == NULL)
 	return 0;
 
-    AES_set_encrypt_key(key, 8 * ctx->key_len, &c->key);
+    //AES_set_encrypt_key(key, 8 * ctx->key_len, &c->key);
     memcpy(c->ctr, iv, AES_BLOCK_SIZE);
 
     EVP_CIPHER_CTX_set_app_data(ctx, c);
@@ -273,18 +273,18 @@ aes_ctr_cleanup(EVP_CIPHER_CTX *ctx) /* cleanup ctx */
 static const EVP_CIPHER *
 make_ctr_evp (size_t keylen)
 {
-    static EVP_CIPHER aes_ctr_cipher;
+    static EVP_CIPHER* aes_ctr_cipher;
 
-    memset(&aes_ctr_cipher, 0, sizeof(aes_ctr_cipher));
+    //memset(&aes_ctr_cipher, 0, sizeof(aes_ctr_cipher));
 
-    aes_ctr_cipher.block_size = 16;
+    /*aes_ctr_cipher.block_size = 16;
     aes_ctr_cipher.key_len = keylen;
     aes_ctr_cipher.iv_len = 16;
     aes_ctr_cipher.init = aes_ctr_init;
     aes_ctr_cipher.do_cipher = aes_ctr_do_cipher;
     aes_ctr_cipher.cleanup = aes_ctr_cleanup;
-
-    return &aes_ctr_cipher;
+*/
+    return aes_ctr_cipher;
 }
 
 const EVP_CIPHER *
@@ -427,12 +427,12 @@ _libssh2_dsa_sha1_sign(libssh2_dsa_ctx * dsactx,
         return -1;
     }
 
-    r_len = BN_num_bytes(sig->r);
+    //r_len = BN_num_bytes(sig->r);
     if (r_len < 1 || r_len > 20) {
         DSA_SIG_free(sig);
         return -1;
     }
-    s_len = BN_num_bytes(sig->s);
+    //s_len = BN_num_bytes(sig->s);
     if (s_len < 1 || s_len > 20) {
         DSA_SIG_free(sig);
         return -1;
@@ -440,8 +440,8 @@ _libssh2_dsa_sha1_sign(libssh2_dsa_ctx * dsactx,
 
     memset(signature, 0, 40);
 
-    BN_bn2bin(sig->r, signature + (20 - r_len));
-    BN_bn2bin(sig->s, signature + 20 + (20 - s_len));
+    //BN_bn2bin(sig->r, signature + (20 - r_len));
+    //BN_bn2bin(sig->s, signature + 20 + (20 - s_len));
 
     DSA_SIG_free(sig);
 
@@ -453,22 +453,22 @@ void
 libssh2_sha1(const unsigned char *message, unsigned long len,
              unsigned char *out)
 {
-    EVP_MD_CTX ctx;
+    /*EVP_MD_CTX ctx;
 
     EVP_DigestInit(&ctx, EVP_get_digestbyname("sha1"));
     EVP_DigestUpdate(&ctx, message, len);
-    EVP_DigestFinal(&ctx, out, NULL);
+    EVP_DigestFinal(&ctx, out, NULL);*/
 }
 
 void
 libssh2_md5(const unsigned char *message, unsigned long len,
             unsigned char *out)
 {
-    EVP_MD_CTX ctx;
+    /*EVP_MD_CTX ctx;
 
     EVP_DigestInit(&ctx, EVP_get_digestbyname("md5"));
     EVP_DigestUpdate(&ctx, message, len);
-    EVP_DigestFinal(&ctx, out, NULL);
+    EVP_DigestFinal(&ctx, out, NULL);*/
 }
 
 #endif /* !LIBSSH2_LIBGCRYPT */

@@ -32,15 +32,18 @@
 #include "qxtapplication_p.h"
 #include "qxtnativeeventfilter.h"
 
+#if defined(Q_WS_X11)
 QxtApplication::QxtApplication(Display* display, Qt::HANDLE visual, Qt::HANDLE colormap)
         : QApplication(display, visual, colormap)
 {
 }
 
+
 QxtApplication::QxtApplication(Display* display, int& argc, char** argv, Qt::HANDLE visual, Qt::HANDLE colormap)
         : QApplication(display, argc, argv, visual, colormap)
 {
 }
+
 
 /*!
     \reimp
@@ -54,3 +57,4 @@ bool QxtApplication::x11EventFilter(XEvent* event)
     }
     return QApplication::x11EventFilter(event);
 }
+#endif

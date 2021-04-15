@@ -67,7 +67,7 @@ struct crypt_ctx
 {
     int encrypt;
     _libssh2_cipher_type(algo);
-    _libssh2_cipher_ctx h;
+    _libssh2_cipher_ctx* h;
 };
 
 static int
@@ -101,6 +101,7 @@ crypt_encrypt(LIBSSH2_SESSION * session, unsigned char *block,
     struct crypt_ctx *cctx = *(struct crypt_ctx **) abstract;
     (void) session;
     return _libssh2_cipher_crypt(&cctx->h, cctx->algo, cctx->encrypt, block);
+    return 0;
 }
 
 static int
@@ -247,8 +248,8 @@ crypt_init_arcfour128(LIBSSH2_SESSION * session,
 	struct crypt_ctx *cctx = *(struct crypt_ctx **) abstract;
 	unsigned char block[8];
 	size_t discard = 1536;
-	for (; discard; discard -= 8)
-	    _libssh2_cipher_crypt(&cctx->h, cctx->algo, cctx->encrypt, block);
+    for (; discard; discard -= 8)
+        _libssh2_cipher_crypt(&cctx->h, cctx->algo, cctx->encrypt, block);
     }
 
     return rc;

@@ -3,7 +3,7 @@ DEFINES         += BUILD_QXT_GUI
 QT               = core gui 
 
 isEqual(QT_MAJOR_VERSION, 5) {
-	QT += widgets
+	QT += widgets gui-private
 }
 
 QXT              = core

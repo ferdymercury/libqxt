@@ -168,7 +168,7 @@ hostkey_method_ssh_rsa_signv(LIBSSH2_SESSION * session,
     int ret;
     int i;
     unsigned char hash[SHA_DIGEST_LENGTH];
-    libssh2_sha1_ctx ctx;
+    /*libssh2_sha1_ctx ctx;
 
     libssh2_sha1_init(&ctx);
     for(i = 0; i < veccount; i++) {
@@ -180,7 +180,7 @@ hostkey_method_ssh_rsa_signv(LIBSSH2_SESSION * session,
                                  signature, signature_len);
     if (ret) {
         return -1;
-    }
+    }*/
 
     return 0;
 }
@@ -344,7 +344,7 @@ hostkey_method_ssh_dss_signv(LIBSSH2_SESSION * session,
 {
     libssh2_dsa_ctx *dsactx = (libssh2_dsa_ctx *) (*abstract);
     unsigned char hash[SHA_DIGEST_LENGTH];
-    libssh2_sha1_ctx ctx;
+    libssh2_sha1_ctx* ctx;
     int i;
 
     *signature = LIBSSH2_ALLOC(session, 2 * SHA_DIGEST_LENGTH);
@@ -355,11 +355,11 @@ hostkey_method_ssh_dss_signv(LIBSSH2_SESSION * session,
     *signature_len = 2 * SHA_DIGEST_LENGTH;
     memset(*signature, 0, 2 * SHA_DIGEST_LENGTH);
 
-    libssh2_sha1_init(&ctx);
+    //libssh2_sha1_init(ctx);
     for(i = 0; i < veccount; i++) {
-        libssh2_sha1_update(ctx, datavec[i].iov_base, datavec[i].iov_len);
+        //libssh2_sha1_update(*ctx, datavec[i].iov_base, datavec[i].iov_len);
     }
-    libssh2_sha1_final(ctx, hash);
+    //libssh2_sha1_final(*ctx, hash);
 
     if (_libssh2_dsa_sha1_sign(dsactx, hash, SHA_DIGEST_LENGTH, *signature)) {
         LIBSSH2_FREE(session, *signature);

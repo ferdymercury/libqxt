@@ -251,7 +251,7 @@ typedef struct kmdhgGPsha1kex_state_t
     size_t f_value_len;
     size_t k_value_len;
     size_t h_sig_len;
-    libssh2_sha1_ctx exchange_hash;
+    libssh2_sha1_ctx* exchange_hash;
     packet_require_state_t req_state;
     libssh2_nonblocking_states burn_state;
 } kmdhgGPsha1kex_state_t;

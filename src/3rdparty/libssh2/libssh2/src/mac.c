@@ -107,20 +107,20 @@ mac_method_hmac_sha1_hash(LIBSSH2_SESSION * session,
                           const unsigned char *addtl,
                           unsigned long addtl_len, void **abstract)
 {
-    libssh2_hmac_ctx ctx;
+    libssh2_hmac_ctx* ctx;
     unsigned char seqno_buf[4];
     (void) session;
 
     _libssh2_htonu32(seqno_buf, seqno);
 
-    libssh2_hmac_sha1_init(&ctx, *abstract, 20);
+    /*libssh2_hmac_sha1_init(&ctx, *abstract, 20);
     libssh2_hmac_update(ctx, seqno_buf, 4);
     libssh2_hmac_update(ctx, packet, packet_len);
     if (addtl && addtl_len) {
         libssh2_hmac_update(ctx, addtl, addtl_len);
     }
-    libssh2_hmac_final(ctx, buf);
-    libssh2_hmac_cleanup(&ctx);
+    libssh2_hmac_final(ctx, buf);*/
+    //libssh2_hmac_cleanup(&ctx);
 
     return 0;
 }
@@ -179,20 +179,20 @@ mac_method_hmac_md5_hash(LIBSSH2_SESSION * session, unsigned char *buf,
                          const unsigned char *addtl,
                          unsigned long addtl_len, void **abstract)
 {
-    libssh2_hmac_ctx ctx;
+    //libssh2_hmac_ctx ctx;
     unsigned char seqno_buf[4];
     (void) session;
 
     _libssh2_htonu32(seqno_buf, seqno);
 
-    libssh2_hmac_md5_init(&ctx, *abstract, 16);
+    /*libssh2_hmac_md5_init(&ctx, *abstract, 16);
     libssh2_hmac_update(ctx, seqno_buf, 4);
     libssh2_hmac_update(ctx, packet, packet_len);
     if (addtl && addtl_len) {
         libssh2_hmac_update(ctx, addtl, addtl_len);
     }
     libssh2_hmac_final(ctx, buf);
-    libssh2_hmac_cleanup(&ctx);
+    libssh2_hmac_cleanup(&ctx);*/
 
     return 0;
 }
@@ -251,20 +251,20 @@ mac_method_hmac_ripemd160_hash(LIBSSH2_SESSION * session,
                                unsigned long addtl_len,
                                void **abstract)
 {
-    libssh2_hmac_ctx ctx;
+    //libssh2_hmac_ctx ctx;
     unsigned char seqno_buf[4];
     (void) session;
 
     _libssh2_htonu32(seqno_buf, seqno);
 
-    libssh2_hmac_ripemd160_init(&ctx, *abstract, 20);
+    /*libssh2_hmac_ripemd160_init(&ctx, *abstract, 20);
     libssh2_hmac_update(ctx, seqno_buf, 4);
     libssh2_hmac_update(ctx, packet, packet_len);
     if (addtl && addtl_len) {
         libssh2_hmac_update(ctx, addtl, addtl_len);
     }
     libssh2_hmac_final(ctx, buf);
-    libssh2_hmac_cleanup(&ctx);
+    libssh2_hmac_cleanup(&ctx);*/
 
     return 0;
 }

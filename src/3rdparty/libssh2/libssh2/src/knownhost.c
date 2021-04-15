@@ -394,7 +394,7 @@ knownhost_check(LIBSSH2_KNOWNHOSTS *hosts,
                        plain input to produce a hash to compare with the
                        stored hash.
                     */
-                    libssh2_hmac_ctx ctx;
+                    libssh2_hmac_ctx* ctx;
                     unsigned char hash[SHA_DIGEST_LENGTH];
 
                     if(SHA_DIGEST_LENGTH != node->name_len) {
@@ -402,11 +402,11 @@ knownhost_check(LIBSSH2_KNOWNHOSTS *hosts,
                            we can't match it */
                         break;
                     }
-                    libssh2_hmac_sha1_init(&ctx, node->salt, node->salt_len);
-                    libssh2_hmac_update(ctx, (unsigned char *)host,
-                                        strlen(host));
-                    libssh2_hmac_final(ctx, hash);
-                    libssh2_hmac_cleanup(&ctx);
+                    libssh2_hmac_sha1_init(ctx, node->salt, node->salt_len);
+                    //libssh2_hmac_update(*ctx, (unsigned char *)host,
+                    //                    strlen(host));
+                    //libssh2_hmac_final(*ctx, hash);
+                    //libssh2_hmac_cleanup(ctx);
 
                     if(!memcmp(hash, node->name, SHA_DIGEST_LENGTH))
                         /* this is a node we're interested in */
